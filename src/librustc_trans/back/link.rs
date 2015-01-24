@@ -339,7 +339,7 @@ pub fn mangle_internal_name_by_type_and_seq<'a, 'tcx>(ccx: &CrateContext<'a, 'tc
     let path = [PathName(token::intern(&s[])),
                 gensym_name(name)];
     let hash = get_symbol_hash(ccx, t);
-    mangle(ast_map::Values(path.iter()), Some(&hash[]))
+    mangle(path.iter().cloned(), Some(&hash[]))
 }
 
 pub fn mangle_internal_name_by_path_and_seq(path: PathElems, flav: &str) -> String {
