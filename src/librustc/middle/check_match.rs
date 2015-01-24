@@ -225,12 +225,12 @@ fn check_expr(cx: &mut MatchCheckCtxt, ex: &ast::Expr) {
         },
         ast::ExprForLoop(ref pat, _, _, _) => {
             let mut static_inliner = StaticInliner::new(cx.tcx);
-            is_refutable(cx, &*static_inliner.fold_pat((*pat).clone()), |uncovered_pat| {
+            if let Some(uncovered_pat) = refutable_pattern(cx, cx, &*static_inliner.fold_pat((*pat).clone())) {
                 span_err!(cx.tcx.sess, pat.span, E0297,
                     "refutable pattern in `for` loop binding: \
                             `{}` not covered",
                             pat_to_string(uncovered_pat));
-            });
+            }
 
             // Check legality of move bindings.
             check_legality_of_move_bindings(cx, false, slice::ref_slice(pat));
@@ -940,12 +940,12 @@ fn check_local(cx: &mut MatchCheckCtxt, loc: &ast::Local) {
     };
 
     let mut static_inliner = StaticInliner::new(cx.tcx);
-    is_refutable(cx, &*static_inliner.fold_pat(loc.pat.clone()), |pat| {
+    if let Some(pat) = refutable_pattern(cx, &*static_inliner.fold_pat(loc.pat.clone())) {
         span_err!(cx.tcx.sess, loc.pat.span, E0005,
             "refutable pattern in {} binding: `{}` not covered",
             name, pat_to_string(pat)
         );
-    });
+    }
 
     // Check legality of move bindings and `@` patterns.
     check_legality_of_move_bindings(cx, false, slice::ref_slice(&loc.pat));
@@ -966,25 +966,23 @@ fn check_fn(cx: &mut MatchCheckCtxt,
     visit::walk_fn(cx, kind, decl, body, sp);
 
     for input in decl.inputs.iter() {
-        is_refutable(cx, &*input.pat, |pat| {
+        if let Some(pat) = refutable_pattern(cx, &*input.pat) {
             span_err!(cx.tcx.sess, input.pat.span, E0006,
                 "refutable pattern in function argument: `{}` not covered",
                 pat_to_string(pat)
             );
-        });
+        }
         check_legality_of_move_bindings(cx, false, slice::ref_slice(&input.pat));
         check_legality_of_bindings_in_at_patterns(cx, &*input.pat);
     }
 }
 
-fn is_refutable<A, F>(cx: &MatchCheckCtxt, pat: &Pat, refutable: F) -> Option<A> where
-    F: FnOnce(&Pat) -> A,
-{
+fn refutable_pattern(cx: &MatchCheckCtxt, pat: &Pat) -> Option<P<Pat>> {
     let pats = Matrix(vec!(vec!(pat)));
     match is_useful(cx, &pats, &[DUMMY_WILD_PAT], ConstructWitness) {
         UsefulWithWitness(pats) => {
             assert_eq!(pats.len(), 1);
-            Some(refutable(&*pats[0]))
+            Some(pats[0])
         },
         NotUseful => None,
         Useful => unreachable!()
