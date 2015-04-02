@@ -162,11 +162,11 @@ impl NamespaceResult {
 }
 
 enum NameDefinition {
-    // The name was unbound.
+    /// The name was unbound.
     NoNameDefinition,
-    // The name identifies an immediate child.
+    /// The name identifies an immediate child.
     ChildNameDefinition(Def, LastPrivate),
-    // The name identifies an import.
+    /// The name identifies an import.
     ImportNameDefinition(Def, LastPrivate),
 }
 
