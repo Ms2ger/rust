@@ -14,7 +14,7 @@ use ext::base::{ExtCtxt, Annotatable};
 use ext::build::AstBuilder;
 use ext::deriving::generic::*;
 use ext::deriving::generic::ty::*;
-use parse::token::InternedString;
+use parse::token::intern;
 use ptr::P;
 
 pub fn expand_deriving_eq(cx: &mut ExtCtxt,
@@ -40,9 +40,9 @@ pub fn expand_deriving_eq(cx: &mut ExtCtxt,
         )
     }
 
-    let inline = cx.meta_word(span, InternedString::new("inline"));
-    let hidden = cx.meta_word(span, InternedString::new("hidden"));
-    let doc = cx.meta_list(span, InternedString::new("doc"), vec!(hidden));
+    let inline = cx.meta_word(span, intern("inline"));
+    let hidden = cx.meta_word(span, intern("hidden"));
+    let doc = cx.meta_list(span, intern("doc"), vec!(hidden));
     let attrs = vec!(cx.attribute(span, inline),
                      cx.attribute(span, doc));
     let trait_def = TraitDef {

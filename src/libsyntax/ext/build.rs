@@ -9,7 +9,7 @@
 // except according to those terms.
 
 use abi;
-use ast::{Ident, Generics, Expr};
+use ast::{Ident, Generics, Expr, Name};
 use ast;
 use ast_util;
 use attr;
@@ -280,15 +280,15 @@ pub trait AstBuilder {
 
     fn attribute(&self, sp: Span, mi: P<ast::MetaItem>) -> ast::Attribute;
 
-    fn meta_word(&self, sp: Span, w: InternedString) -> P<ast::MetaItem>;
+    fn meta_word(&self, sp: Span, w: Name) -> P<ast::MetaItem>;
     fn meta_list(&self,
                  sp: Span,
-                 name: InternedString,
+                 name: Name,
                  mis: Vec<P<ast::MetaItem>> )
                  -> P<ast::MetaItem>;
     fn meta_name_value(&self,
                        sp: Span,
-                       name: InternedString,
+                       name: Name,
                        value: ast::Lit_)
                        -> P<ast::MetaItem>;
 
@@ -1095,19 +1095,19 @@ impl<'a> AstBuilder for ExtCtxt<'a> {
         })
     }
 
-    fn meta_word(&self, sp: Span, w: InternedString) -> P<ast::MetaItem> {
+    fn meta_word(&self, sp: Span, w: Name) -> P<ast::MetaItem> {
         P(respan(sp, ast::MetaWord(w)))
     }
     fn meta_list(&self,
                  sp: Span,
-                 name: InternedString,
+                 name: Name,
                  mis: Vec<P<ast::MetaItem>> )
                  -> P<ast::MetaItem> {
         P(respan(sp, ast::MetaList(name, mis)))
     }
     fn meta_name_value(&self,
                        sp: Span,
-                       name: InternedString,
+                       name: Name,
                        value: ast::Lit_)
                        -> P<ast::MetaItem> {
         P(respan(sp, ast::MetaNameValue(name, respan(sp, value))))

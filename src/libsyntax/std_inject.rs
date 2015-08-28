@@ -14,7 +14,7 @@ use codemap::{DUMMY_SP, Span, ExpnInfo, NameAndSpan, MacroAttribute};
 use codemap;
 use fold::Folder;
 use fold;
-use parse::token::{intern, InternedString, special_idents};
+use parse::token::{intern, special_idents};
 use parse::{token, ParseSess};
 use ptr::P;
 use util::small_vector::SmallVector;
@@ -88,7 +88,7 @@ impl fold::Folder for CrateInjector {
             ident: self.item_name,
             attrs: vec!(
                 attr::mk_attr_outer(attr::mk_attr_id(), attr::mk_word_item(
-                        InternedString::new("macro_use")))),
+                        intern("macro_use")))),
             node: ast::ItemExternCrate(Some(self.crate_name)),
             vis: ast::Inherited,
             span: DUMMY_SP
@@ -157,7 +157,7 @@ impl fold::Folder for PreludeInjector {
                     style: ast::AttrOuter,
                     value: P(ast::MetaItem {
                         span: self.span,
-                        node: ast::MetaWord(special_idents::prelude_import.name.as_str()),
+                        node: ast::MetaWord(special_idents::prelude_import.name),
                     }),
                     is_sugared_doc: false,
                 },

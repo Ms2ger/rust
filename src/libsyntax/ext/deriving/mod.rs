@@ -19,7 +19,7 @@ use ext::base::{ExtCtxt, SyntaxEnv, MultiDecorator, MultiItemDecorator, MultiMod
 use ext::build::AstBuilder;
 use feature_gate;
 use codemap::Span;
-use parse::token::{intern, intern_and_get_ident};
+use parse::token::intern;
 
 macro_rules! pathvec {
     ($($x:ident)::+) => (
@@ -101,7 +101,7 @@ fn expand_derive(cx: &mut ExtCtxt,
                     }
                 };
 
-                if !(is_builtin_trait(tname) || cx.ecfg.enable_custom_derive()) {
+                if !(is_builtin_trait(&tname.as_str()) || cx.ecfg.enable_custom_derive()) {
                     feature_gate::emit_feature_err(&cx.parse_sess.span_diagnostic,
                                                    "custom_derive",
                                                    titem.span,
@@ -111,7 +111,7 @@ fn expand_derive(cx: &mut ExtCtxt,
 
                 // #[derive(Foo, Bar)] expands to #[derive_Foo] #[derive_Bar]
                 item.attrs.push(cx.attribute(titem.span, cx.meta_word(titem.span,
-                    intern_and_get_ident(&format!("derive_{}", tname)))));
+                    intern(&format!("derive_{}", tname)))));
             }
 
             item

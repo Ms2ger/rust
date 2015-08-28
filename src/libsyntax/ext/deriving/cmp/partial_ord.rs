@@ -17,7 +17,7 @@ use ext::base::{ExtCtxt, Annotatable};
 use ext::build::AstBuilder;
 use ext::deriving::generic::*;
 use ext::deriving::generic::ty::*;
-use parse::token::InternedString;
+use parse::token::intern;
 use ptr::P;
 
 pub fn expand_deriving_partial_ord(cx: &mut ExtCtxt,
@@ -28,7 +28,7 @@ pub fn expand_deriving_partial_ord(cx: &mut ExtCtxt,
 {
     macro_rules! md {
         ($name:expr, $op:expr, $equal:expr) => { {
-            let inline = cx.meta_word(span, InternedString::new("inline"));
+            let inline = cx.meta_word(span, intern("inline"));
             let attrs = vec!(cx.attribute(span, inline));
             MethodDef {
                 name: $name,
@@ -51,7 +51,7 @@ pub fn expand_deriving_partial_ord(cx: &mut ExtCtxt,
                                     vec![Box::new(ordering_ty)],
                                     true));
 
-    let inline = cx.meta_word(span, InternedString::new("inline"));
+    let inline = cx.meta_word(span, intern("inline"));
     let attrs = vec!(cx.attribute(span, inline));
 
     let partial_cmp_def = MethodDef {

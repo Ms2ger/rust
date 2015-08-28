@@ -26,7 +26,7 @@ use feature_gate::{self, Features, GatedCfg};
 use fold;
 use fold::*;
 use parse;
-use parse::token::{fresh_mark, fresh_name, intern};
+use parse::token::{fresh_mark, fresh_name};
 use parse::token;
 use ptr::P;
 use util::small_vector::SmallVector;
@@ -1266,7 +1266,7 @@ macro_rules! partition {
                     fld: &MacroExpander)
                      -> (Vec<ast::Attribute>, Vec<ast::Attribute>) {
             attrs.iter().cloned().partition(|attr| {
-                match fld.cx.syntax_env.find(&intern(&attr.name())) {
+                match fld.cx.syntax_env.find(&attr.name()) {
                     Some(rc) => match *rc {
                         $variant(..) => true,
                         _ => false
@@ -1289,7 +1289,7 @@ fn expand_decorators(a: Annotatable,
                      new_attrs: &mut Vec<ast::Attribute>)
 {
     for attr in a.attrs() {
-        let mname = intern(&attr.name());
+        let mname = attr.name();
         match fld.cx.syntax_env.find(&mname) {
             Some(rc) => match *rc {
                 Decorator(ref dec) => {
@@ -1366,7 +1366,7 @@ fn expand_item_multi_modifier(mut it: Annotatable,
     }
 
     for attr in &modifiers {
-        let mname = intern(&attr.name());
+        let mname = attr.name();
 
         match fld.cx.syntax_env.find(&mname) {
             Some(rc) => match *rc {
@@ -1414,7 +1414,7 @@ fn expand_item_modifiers(mut it: P<ast::Item>,
     }
 
     for attr in &modifiers {
-        let mname = intern(&attr.name());
+        let mname = attr.name();
 
         match fld.cx.syntax_env.find(&mname) {
             Some(rc) => match *rc {

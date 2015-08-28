@@ -492,9 +492,9 @@ pub type MetaItem = Spanned<MetaItem_>;
 
 #[derive(Clone, Eq, RustcEncodable, RustcDecodable, Hash, Debug)]
 pub enum MetaItem_ {
-    MetaWord(InternedString),
-    MetaList(InternedString, Vec<P<MetaItem>>),
-    MetaNameValue(InternedString, Lit),
+    MetaWord(Name),
+    MetaList(Name, Vec<P<MetaItem>>),
+    MetaNameValue(Name, Lit),
 }
 
 // can't be derived because the MetaList requires an unordered comparison

@@ -210,8 +210,8 @@ impl fold::Folder for EntryPointCleaner {
             EntryPointType::MainAttr |
             EntryPointType::Start =>
                 folded.map(|ast::Item {id, ident, attrs, node, vis, span}| {
-                    let allow_str = InternedString::new("allow");
-                    let dead_code_str = InternedString::new("dead_code");
+                    let allow_str = intern("allow");
+                    let dead_code_str = intern("dead_code");
                     let allow_dead_code_item =
                         attr::mk_list_item(allow_str,
                                            vec![attr::mk_word_item(dead_code_str)]);
@@ -490,7 +490,7 @@ fn mk_main(cx: &mut TestCtxt) -> P<ast::Item> {
                                        vec![tests_ident_expr]);
     let call_test_main = ecx.stmt_expr(call_test_main);
     // #![main]
-    let main_meta = ecx.meta_word(sp, token::intern_and_get_ident("main"));
+    let main_meta = ecx.meta_word(sp, token::intern("main"));
     let main_attr = ecx.attribute(sp, main_meta);
     // pub fn main() { ... }
     let main_ret_ty = ecx.ty(sp, ast::TyTup(vec![]));

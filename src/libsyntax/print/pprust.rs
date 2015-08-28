@@ -19,7 +19,7 @@ use owned_slice::OwnedSlice;
 use attr::{AttrMetaMethods, AttributeMethods};
 use codemap::{self, CodeMap, BytePos};
 use diagnostic;
-use parse::token::{self, BinOpToken, Token, InternedString};
+use parse::token::{self, intern, BinOpToken, Token};
 use parse::lexer::comments;
 use parse;
 use print::pp::{self, break_offset, word, space, zerobreak, hardbreak};
@@ -119,12 +119,12 @@ pub fn print_crate<'a>(cm: &'a CodeMap,
         // However we don't want these attributes in the AST because
         // of the feature gate, so we fake them up here.
 
-        let no_std_meta = attr::mk_word_item(InternedString::new("no_std"));
-        let prelude_import_meta = attr::mk_word_item(InternedString::new("prelude_import"));
+        let no_std_meta = attr::mk_word_item(intern("no_std"));
+        let prelude_import_meta = attr::mk_word_item(intern("prelude_import"));
 
         // #![feature(no_std)]
         let fake_attr = attr::mk_attr_inner(attr::mk_attr_id(),
-                                            attr::mk_list_item(InternedString::new("feature"),
+                                            attr::mk_list_item(intern("feature"),
                                                                vec![no_std_meta.clone(),
                                                                     prelude_import_meta]));
         try!(s.print_attribute(&fake_attr));
@@ -2624,15 +2624,15 @@ impl<'a> State<'a> {
         try!(self.ibox(indent_unit));
         match item.node {
             ast::MetaWord(ref name) => {
-                try!(word(&mut self.s, &name));
+                try!(word(&mut self.s, &name.as_str()[..]));
             }
             ast::MetaNameValue(ref name, ref value) => {
-                try!(self.word_space(&name[..]));
+                try!(self.word_space(&name.as_str()[..]));
                 try!(self.word_space("="));
                 try!(self.print_literal(value));
             }
             ast::MetaList(ref name, ref items) => {
-                try!(word(&mut self.s, &name));
+                try!(word(&mut self.s, &name.as_str()[..]));
                 try!(self.popen());
                 try!(self.commasep(Consistent,
                                    &items[..],

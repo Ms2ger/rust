@@ -369,7 +369,7 @@ impl GatedCfg {
     pub fn gate(cfg: &ast::MetaItem) -> Option<GatedCfg> {
         let name = cfg.name();
         GATED_CFGS.iter()
-                  .position(|info| info.0 == name)
+                  .position(|info| name == info.0)
                   .map(|idx| {
                       GatedCfg {
                           span: cfg.span,
@@ -521,7 +521,7 @@ impl<'a> Context<'a> {
 
     fn check_attribute(&self, attr: &ast::Attribute, is_macro: bool) {
         debug!("check_attribute(attr = {:?})", attr);
-        let name = &*attr.name();
+        let name = &*attr.name().as_str();
         for &(n, ty) in KNOWN_ATTRIBUTES {
             if n == name {
                 if let Gated(gate, desc) = ty {
@@ -949,7 +949,7 @@ fn check_crate_inner<F>(cm: &CodeMap, span_handler: &SpanHandler,
                             accepted_features.push(mi.span);
                         }
                         None => {
-                            unknown_features.push((name, mi.span));
+                            unknown_features.push((InternedString::new_from_name(name), mi.span));
                         }
                     }
                 }

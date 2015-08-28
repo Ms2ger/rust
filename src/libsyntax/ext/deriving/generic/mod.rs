@@ -205,8 +205,7 @@ use codemap::Span;
 use diagnostic::SpanHandler;
 use fold::MoveMap;
 use owned_slice::OwnedSlice;
-use parse::token::{intern, InternedString};
-use parse::token::special_idents;
+use parse::token::{intern, special_idents};
 use ptr::P;
 
 use self::ty::{LifetimeBounds, Path, Ptr, PtrTy, Self_, Ty};
@@ -413,7 +412,7 @@ impl<'a> TraitDef<'a> {
                 // generated implementations are linted
                 let mut attrs = newitem.attrs.clone();
                 attrs.extend(item.attrs.iter().filter(|a| {
-                    match &a.name()[..] {
+                    match &a.name().as_str()[..] {
                         "allow" | "warn" | "deny" | "forbid" => true,
                         _ => false,
                     }
@@ -612,7 +611,7 @@ impl<'a> TraitDef<'a> {
         let attr = cx.attribute(
             self.span,
             cx.meta_word(self.span,
-                         InternedString::new("automatically_derived")));
+                         intern("automatically_derived")));
         // Just mark it now since we know that it'll end up used downstream
         attr::mark_used(&attr);
         let opt_trait_ref = Some(trait_ref);
@@ -620,9 +619,9 @@ impl<'a> TraitDef<'a> {
         let unused_qual = cx.attribute(
             self.span,
             cx.meta_list(self.span,
-                         InternedString::new("allow"),
+                         intern("allow"),
                          vec![cx.meta_word(self.span,
-                                           InternedString::new("unused_qualifications"))]));
+                                           intern("unused_qualifications"))]));
         let mut a = vec![attr, unused_qual];
         a.extend(self.attributes.iter().cloned());
         cx.item(

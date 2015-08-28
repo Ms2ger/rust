@@ -174,7 +174,7 @@ impl<'a> ParserAttr for Parser<'a> {
 
         let lo = self.span.lo;
         let ident = panictry!(self.parse_ident());
-        let name = self.id_to_interned_str(ident);
+        let name = ident.name;
         match self.token {
             token::Eq => {
                 panictry!(self.bump());
