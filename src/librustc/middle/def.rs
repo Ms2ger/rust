@@ -127,7 +127,7 @@ impl Def {
             DefTyParam(..) | DefUse(..) | DefStruct(..) | DefTrait(..) |
             DefMethod(..) | DefConst(..) | DefAssociatedConst(..) |
             DefPrimTy(..) | DefLabel(..) | DefSelfTy(..) => {
-                panic!("attempted .def_id() on invalid {:?}", self)
+                panic!("attempted .var_id() on invalid {:?}", self)
             }
         }
     }

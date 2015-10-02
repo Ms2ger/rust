@@ -221,8 +221,8 @@ pub fn lower_explicit_self_underscore(es: &ExplicitSelf_) -> hir::ExplicitSelf_ 
 
 pub fn lower_mutability(m: Mutability) -> hir::Mutability {
     match m {
-        MutMutable => hir::MutMutable,
-        MutImmutable => hir::MutImmutable,
+        MutMutable => hir::Mutability::Mutable,
+        MutImmutable => hir::Mutability::Immutable,
     }
 }
 

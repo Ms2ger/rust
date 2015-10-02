@@ -294,7 +294,7 @@ pub fn block_to_string(blk: &hir::Block) -> String {
 }
 
 pub fn explicit_self_to_string(explicit_self: &hir::ExplicitSelf_) -> String {
-    to_string(|s| s.print_explicit_self(explicit_self, hir::MutImmutable).map(|_| {}))
+    to_string(|s| s.print_explicit_self(explicit_self, hir::Mutability::Immutable).map(|_| {}))
 }
 
 pub fn variant_to_string(var: &hir::Variant) -> String {
@@ -474,8 +474,8 @@ impl<'a> State<'a> {
             hir::TyPtr(ref mt) => {
                 try!(word(&mut self.s, "*"));
                 match mt.mutbl {
-                    hir::MutMutable => try!(self.word_nbsp("mut")),
-                    hir::MutImmutable => try!(self.word_nbsp("const")),
+                    hir::Mutability::Mutable => try!(self.word_nbsp("mut")),
+                    hir::Mutability::Immutable => try!(self.word_nbsp("const")),
                 }
                 try!(self.print_type(&*mt.ty));
             }
@@ -653,7 +653,7 @@ impl<'a> State<'a> {
             hir::ItemStatic(ref ty, m, ref expr) => {
                 try!(self.head(&visibility_qualified(item.vis,
                                                     "static")));
-                if m == hir::MutMutable {
+                if m == hir::Mutability::Mutable {
                     try!(self.word_space("mut"));
                 }
                 try!(self.print_name(item.name));
@@ -1730,8 +1730,8 @@ impl<'a> State<'a> {
                         try!(self.word_nbsp("ref"));
                         try!(self.print_mutability(mutbl));
                     }
-                    hir::BindByValue(hir::MutImmutable) => {}
-                    hir::BindByValue(hir::MutMutable) => {
+                    hir::BindByValue(hir::Mutability::Immutable) => {}
+                    hir::BindByValue(hir::Mutability::Mutable) => {
                         try!(self.word_nbsp("mut"));
                     }
                 }
@@ -1800,7 +1800,7 @@ impl<'a> State<'a> {
             }
             hir::PatRegion(ref inner, mutbl) => {
                 try!(word(&mut self.s, "&"));
-                if mutbl == hir::MutMutable {
+                if mutbl == hir::Mutability::Mutable {
                     try!(word(&mut self.s, "mut "));
                 }
                 try!(self.print_pat(&**inner));
@@ -1937,10 +1937,10 @@ impl<'a> State<'a> {
         let mut first = true;
         if let Some(explicit_self) = opt_explicit_self {
             let m = match explicit_self {
-                &hir::SelfStatic => hir::MutImmutable,
+                &hir::SelfStatic => hir::Mutability::Immutable,
                 _ => match decl.inputs[0].pat.node {
                     hir::PatIdent(hir::BindByValue(m), _, _) => m,
-                    _ => hir::MutImmutable
+                    _ => hir::Mutability::Immutable
                 }
             };
             first = !try!(self.print_explicit_self(explicit_self, m));
@@ -2201,8 +2201,8 @@ impl<'a> State<'a> {
     pub fn print_mutability(&mut self,
                             mutbl: hir::Mutability) -> io::Result<()> {
         match mutbl {
-            hir::MutMutable => self.word_nbsp("mut"),
-            hir::MutImmutable => Ok(()),
+            hir::Mutability::Mutable => self.word_nbsp("mut"),
+            hir::Mutability::Immutable => Ok(()),
         }
     }
 

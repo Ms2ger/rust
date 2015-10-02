@@ -21,7 +21,6 @@ pub use self::FunctionRetTy::*;
 pub use self::ForeignItem_::*;
 pub use self::ImplItem_::*;
 pub use self::Item_::*;
-pub use self::Mutability::*;
 pub use self::Pat_::*;
 pub use self::PathListItem_::*;
 pub use self::PatWildKind::*;
@@ -443,8 +442,8 @@ pub enum Pat_ {
 
 #[derive(Clone, PartialEq, Eq, RustcEncodable, RustcDecodable, Hash, Debug, Copy)]
 pub enum Mutability {
-    MutMutable,
-    MutImmutable,
+    Mutable,
+    Immutable,
 }
 
 #[derive(Clone, PartialEq, Eq, RustcEncodable, RustcDecodable, Hash, Debug, Copy)]

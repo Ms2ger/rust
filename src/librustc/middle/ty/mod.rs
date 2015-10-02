@@ -51,7 +51,7 @@ use syntax::parse::token::{InternedString, special_idents};
 
 use rustc_front::hir;
 use rustc_front::hir::{ItemImpl, ItemTrait};
-use rustc_front::hir::{MutImmutable, MutMutable, Visibility};
+use rustc_front::hir::{Mutability, Visibility};
 
 pub use self::sty::{Binder, DebruijnIndex};
 pub use self::sty::{BuiltinBound, BuiltinBounds, ExistentialBounds};
@@ -1868,8 +1868,8 @@ pub enum LvaluePreference {
 impl LvaluePreference {
     pub fn from_mutbl(m: hir::Mutability) -> Self {
         match m {
-            hir::MutMutable => PreferMutLvalue,
-            hir::MutImmutable => NoPreference,
+            hir::Mutability::Mutable => PreferMutLvalue,
+            hir::Mutability::Immutable => NoPreference,
         }
     }
 }
@@ -1903,8 +1903,8 @@ fn lookup_locally_or_in_crate_store<V, F>(descr: &str,
 impl BorrowKind {
     pub fn from_mutbl(m: hir::Mutability) -> BorrowKind {
         match m {
-            hir::MutMutable => MutBorrow,
-            hir::MutImmutable => ImmBorrow,
+            hir::Mutability::Mutable => MutBorrow,
+            hir::Mutability::Immutable => ImmBorrow,
         }
     }
 
@@ -1914,13 +1914,13 @@ impl BorrowKind {
     /// question.
     pub fn to_mutbl_lossy(self) -> hir::Mutability {
         match self {
-            MutBorrow => hir::MutMutable,
-            ImmBorrow => hir::MutImmutable,
+            MutBorrow => hir::Mutability::Mutable,
+            ImmBorrow => hir::Mutability::Immutable,
 
             // We have no type corresponding to a unique imm borrow, so
             // use `&mut`. It gives all the capabilities of an `&uniq`
             // and hence is a safe "over approximation".
-            UniqueImmBorrow => hir::MutMutable,
+            UniqueImmBorrow => hir::Mutability::Mutable,
         }
     }
 

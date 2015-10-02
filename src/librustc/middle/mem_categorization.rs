@@ -80,7 +80,7 @@ use middle::def;
 use middle::ty::adjustment;
 use middle::ty::{self, Ty};
 
-use rustc_front::hir::{MutImmutable, MutMutable};
+use rustc_front::hir::Mutability;
 use rustc_front::hir;
 use syntax::ast;
 use syntax::codemap::Span;
@@ -266,8 +266,8 @@ pub type McResult<T> = Result<T, ()>;
 impl MutabilityCategory {
     pub fn from_mutbl(m: hir::Mutability) -> MutabilityCategory {
         let ret = match m {
-            MutImmutable => McImmutable,
-            MutMutable => McDeclared
+            Mutability::Immutable => McImmutable,
+            Mutability::Mutable => McDeclared
         };
         debug!("MutabilityCategory::{}({:?}) => {:?}",
                "from_mutbl", m, ret);
@@ -307,7 +307,7 @@ impl MutabilityCategory {
         let ret = match tcx.map.get(id) {
             ast_map::NodeLocal(p) | ast_map::NodeArg(p) => match p.node {
                 hir::PatIdent(bind_mode, _, _) => {
-                    if bind_mode == hir::BindByValue(hir::MutMutable) {
+                    if bind_mode == hir::BindByValue(hir::Mutability::Mutable) {
                         McDeclared
                     } else {
                         McImmutable
