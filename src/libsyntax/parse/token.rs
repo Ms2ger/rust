@@ -39,6 +39,23 @@ pub enum BinOpToken {
     Shr,
 }
 
+impl BinOpToken {
+    pub fn as_str(&self) -> &'static str {
+        match *self {
+            BinOpToken::Plus => "+",
+            BinOpToken::Minus => "-",
+            BinOpToken::Star => "*",
+            BinOpToken::Slash => "/",
+            BinOpToken::Percent => "%",
+            BinOpToken::Caret => "^",
+            BinOpToken::And => "&",
+            BinOpToken::Or => "|",
+            BinOpToken::Shl => "<<",
+            BinOpToken::Shr => ">>",
+        }
+    }
+}
+
 /// A delimiter token
 #[derive(Clone, RustcEncodable, RustcDecodable, PartialEq, Eq, Hash, Debug, Copy)]
 pub enum DelimToken {

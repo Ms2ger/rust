@@ -13,7 +13,7 @@ pub use self::AnnNode::*;
 use syntax::abi::Abi;
 use syntax::ast;
 use syntax::codemap::{CodeMap, Spanned};
-use syntax::parse::token::{self, keywords, BinOpToken};
+use syntax::parse::token::{keywords, BinOpToken};
 use syntax::parse::lexer::comments;
 use syntax::print::pp::{self, break_offset, word, space, hardbreak};
 use syntax::print::pp::{Breaks, eof};
@@ -204,18 +204,7 @@ pub fn to_string<F>(f: F) -> String
 }
 
 pub fn binop_to_string(op: BinOpToken) -> &'static str {
-    match op {
-        token::Plus => "+",
-        token::Minus => "-",
-        token::Star => "*",
-        token::Slash => "/",
-        token::Percent => "%",
-        token::Caret => "^",
-        token::And => "&",
-        token::Or => "|",
-        token::Shl => "<<",
-        token::Shr => ">>",
-    }
+    op.as_str()
 }
 
 pub fn ty_to_string(ty: &hir::Ty) -> String {

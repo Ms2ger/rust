@@ -193,18 +193,7 @@ pub fn to_string<F>(f: F) -> String where
 }
 
 pub fn binop_to_string(op: BinOpToken) -> &'static str {
-    match op {
-        token::Plus     => "+",
-        token::Minus    => "-",
-        token::Star     => "*",
-        token::Slash    => "/",
-        token::Percent  => "%",
-        token::Caret    => "^",
-        token::And      => "&",
-        token::Or       => "|",
-        token::Shl      => "<<",
-        token::Shr      => ">>",
-    }
+    op.as_str()
 }
 
 pub fn token_to_string(tok: &Token) -> String {
@@ -220,8 +209,8 @@ pub fn token_to_string(tok: &Token) -> String {
         token::Tilde                => "~".to_string(),
         token::OrOr                 => "||".to_string(),
         token::AndAnd               => "&&".to_string(),
-        token::BinOp(op)            => binop_to_string(op).to_string(),
-        token::BinOpEq(op)          => format!("{}=", binop_to_string(op)),
+        token::BinOp(op)            => op.as_str().to_string(),
+        token::BinOpEq(op)          => format!("{}=", op.as_str()),
 
         /* Structural symbols */
         token::At                   => "@".to_string(),
